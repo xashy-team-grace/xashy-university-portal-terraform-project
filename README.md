@@ -1,0 +1,1 @@
+## This Repo manages the AWS Infra for XASHY UNIVERSITY PORTAL
