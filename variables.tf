@@ -10,5 +10,5 @@ variable "region" {
 
 variable "project" {
   description = "name of the project"
-  default = "xashy-uni-portal"
+  default     = "xashy-uni-portal"
 }

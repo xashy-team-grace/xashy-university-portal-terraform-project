@@ -9,10 +9,10 @@ terraform {
   required_version = ">= 1.10.0"
 
   backend "s3" {
-    bucket = "cactus-tfstate"
-    key    = "dev/xashy-university-portal.tfstate"
+    bucket       = "cactus-tfstate"
+    key          = "dev/xashy-university-portal.tfstate"
     use_lockfile = true
-    region = "us-east-1"
+    region       = "us-east-1"
   }
 }
 
