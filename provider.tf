@@ -13,11 +13,9 @@ terraform {
     key    = "dev/xashy-university-portal.tfstate"
     use_lockfile = true
     region = "us-east-1"
-    profile = "terraform"
   }
 }
 
 provider "aws" {
-  profile = "terraform"
   region = var.region
 }
