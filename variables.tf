@@ -12,3 +12,8 @@ variable "project" {
   description = "name of the project"
   default     = "xashy-uni-portal"
 }
+
+variable "environment" {
+  description = "SDLC environment"
+  default     = "dev"
+}
