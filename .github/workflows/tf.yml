@@ -53,7 +53,7 @@ jobs:
   terraform-apply:
     needs: terraform-plan
     name: 'Terraform Apply'
-    # environment: dev
+    environment: dev
     runs-on: ubuntu-latest
 
     #run only if we're on the main branch and the event that triggered the workflow is a push to main
