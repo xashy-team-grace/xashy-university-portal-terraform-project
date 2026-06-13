@@ -82,7 +82,7 @@ resource "aws_s3_bucket_versioning" "this" {
   bucket = aws_s3_bucket.artifact_bucket.id
 
   versioning_configuration {
-    status = "ENABLED"
+    status = "Enabled"
   }
 }
 
