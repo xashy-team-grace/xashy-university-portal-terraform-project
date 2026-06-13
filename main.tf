@@ -21,14 +21,18 @@ resource "aws_security_group" "web_app_sg" {
   name   = "${var.project}-web-app-sg"
   vpc_id = module.vpc.vpc_id
 
+  lifecycle {
+    create_before_destroy = true
+  }
+
 }
 
 resource "aws_instance" "web_app" {
-  ami                  = "ami-0521cb2d60cfbb1a6"
-  instance_type        = "t3.micro"
-  security_groups      = [aws_security_group.web_app_sg.id]
-  subnet_id            = module.vpc.private_subnets[0]
-  iam_instance_profile = aws_iam_instance_profile.ssm.name
+  ami                    = "ami-0521cb2d60cfbb1a6"
+  instance_type          = "t3.micro"
+  vpc_security_group_ids = [aws_security_group.web_app_sg.id]
+  subnet_id              = module.vpc.private_subnets[0]
+  iam_instance_profile   = aws_iam_instance_profile.ssm.name
 
   tags = {
     Name = "web-app-${var.project}"
@@ -99,8 +103,3 @@ data "aws_iam_policy_document" "example" {
   }
 }
 
-resource "aws_iam_policy" "example" {
-  name   = "example_policy"
-  path   = "/"
-  policy = data.aws_iam_policy_document.example.json
-}
