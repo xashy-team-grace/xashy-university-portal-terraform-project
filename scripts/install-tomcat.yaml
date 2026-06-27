@@ -7,8 +7,10 @@ parameters:
     default: "17"
   tomcatVersion:
     type: String
+    # Tomcat 9.x is the last line on the javax.servlet namespace; the app uses
+    # javax.* so it is incompatible with Tomcat 10+ (jakarta.* namespace).
     description: "Apache Tomcat version to install."
-    default: "10.1.30"
+    default: "9.0.109"
 mainSteps:
   - action: "aws:runShellScript"
     name: "installJavaAndTomcat"
@@ -23,9 +25,15 @@ mainSteps:
         - "java -version"
         - "# Dedicated, unprivileged service account for Tomcat"
         - "id tomcat &>/dev/null || useradd -r -m -U -d /opt/tomcat -s /sbin/nologin tomcat"
+        - "# Idempotent re-install: stop any running Tomcat and clear CATALINA_HOME"
+        - "# so we never overlay a new release on top of stale jars (e.g. v10 -> v9)."
+        - "systemctl stop tomcat 2>/dev/null || true"
+        - "rm -rf /opt/tomcat/*"
         - "install -d -o tomcat -g tomcat /opt/tomcat"
         - "TARBALL=\"apache-tomcat-${TOMCAT_VERSION}.tar.gz\""
-        - "curl -fsSL -o \"/tmp/${TARBALL}\" \"https://dlcdn.apache.org/tomcat/tomcat-${TOMCAT_MAJOR}/v${TOMCAT_VERSION}/bin/${TARBALL}\""
+        - "REL_PATH=\"tomcat/tomcat-${TOMCAT_MAJOR}/v${TOMCAT_VERSION}/bin/${TARBALL}\""
+        - "# dlcdn only hosts current releases; archive permanently retains every version as a fallback"
+        - "curl -fsSL -o \"/tmp/${TARBALL}\" \"https://dlcdn.apache.org/${REL_PATH}\" || curl -fsSL -o \"/tmp/${TARBALL}\" \"https://archive.apache.org/dist/${REL_PATH}\""
         - "tar -xzf \"/tmp/${TARBALL}\" -C /opt/tomcat --strip-components=1"
         - "chown -R tomcat:tomcat /opt/tomcat"
         - "chmod +x /opt/tomcat/bin/*.sh"
